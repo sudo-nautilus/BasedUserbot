@@ -35,7 +35,8 @@ DEAI_BAN_CODES = {
     "24": "RESERVED",
     "25": "RESERVED",
     "26": "Raid initiation",
-    "27": "Raid participation"
+    "27": "Raid participation",
+    "28": "Kriminalamt"
 }
 DEAI_MODULE_CODES = {
     "0": "Gban",
@@ -108,7 +109,7 @@ async def get_rose(client, entity):
     conversation_hack[identifier] = None
     while not conversation_hack[identifier]:
         await asyncio.sleep(0.5)
-    ntext = conversation_hack[identifier].split('\n')
+    ntext = conversation_hack.pop(identifier).split('\n')
     ntext.pop(0)
     if ntext:
         date = '-'.join(ntext.pop().split(' ')[-1].split('/')[::-1])
@@ -125,7 +126,7 @@ async def get_deai(client, entity):
     conversation_hack[identifier] = None
     while not conversation_hack[identifier]:
         await asyncio.sleep(0.5)
-    ntext = conversation_hack[identifier].split('\n')
+    ntext = conversation_hack.pop(identifier).split('\n')
     ntext.pop(0)
     if ntext:
         ntext.pop(0)
