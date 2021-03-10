@@ -22,13 +22,14 @@ async def main():
                 text = log_ring.popleft()
             except IndexError:
                 pass
-            while True:
-                try:
-                    await slave.send_message(config['config']['log_chat'], text, disable_web_page_preview=True)
-                except FloodWait as ex:
-                    await asyncio.sleep(ex.x + 1)
-                else:
-                    break
+            else:
+                while True:
+                    try:
+                        await slave.send_message(config['config']['log_chat'], text, disable_web_page_preview=True)
+                    except FloodWait as ex:
+                        await asyncio.sleep(ex.x + 1)
+                    else:
+                        break
     asyncio.create_task(log_ring_worker())
     await asyncio.gather(*(_start_app(app) for app in apps), slave.start())
     await idle()
