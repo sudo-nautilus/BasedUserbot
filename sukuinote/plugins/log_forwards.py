@@ -1,10 +1,11 @@
 import html
 import asyncio
+from collections import defaultdict
 from pyrogram import Client, filters
 from pyrogram.errors.exceptions.flood_420 import FloodWait
 from .. import config, slave, log_errors, app_user_ids
 
-logged = set()
+logged = defaultdict(set)
 lock = asyncio.Lock()
 
 @Client.on_message(~filters.forwarded & ~filters.chat(config['config']['log_chat']) & filters.incoming & filters.forwarded & (filters.group | filters.channel))
@@ -27,9 +28,8 @@ async def log_forwards(client, message):
             break
     else:
         return
-    identifier = (message.chat.id, message.message_id)
     async with lock:
-        if identifier in logged:
+        if message.message_id not in logged[message.chat.id]:
             return
         chat_text = html.escape(message.chat.title)
         if message.chat.username:
@@ -94,4 +94,4 @@ async def log_forwards(client, message):
                 await asyncio.sleep(ex.x + 1)
             else:
                 break
-        logged.add(identifier)
+        logged[message.chat.id].add(message.message_id)

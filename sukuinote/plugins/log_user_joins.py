@@ -1,5 +1,6 @@
 import html
 import asyncio
+from collections import defaultdict
 from pyrogram import Client, ContinuePropagation
 from pyrogram.errors.exceptions.flood_420 import FloodWait
 from pyrogram.raw.types import UpdateNewChannelMessage, UpdateNewMessage, MessageService, PeerChat, PeerChannel, MessageActionChatAddUser, MessageActionChatJoinedByLink, PeerUser
@@ -11,7 +12,7 @@ def sexy_user_name(user):
         text += ' ' + user.last_name
     return f'{"<code>[DELETED]</code>" if user.deleted else html.escape(text or "Empty???")} [<code>{user.id}</code>]'
 
-handled = set()
+handled = defaultdict(set)
 lock = asyncio.Lock()
 @Client.on_raw_update()
 @log_errors
@@ -45,7 +46,7 @@ async def log_user_joins(client, update, users, chats):
                     atext = f'<a href="https://t.me/{chats[chat_id].username}">{atext}</a>'
                 text += f"{atext} [<code>{sexy_chat_id}</code>]\n"
                 async with lock:
-                    if (sexy_chat_id, message.id) not in handled:
+                    if message.id not in handled[sexy_chat_id]:
                         if isinstance(message.from_id, PeerUser):
                             adder = sexy_user_name(users[message.from_id.user_id])
                         else:
@@ -65,6 +66,6 @@ async def log_user_joins(client, update, users, chats):
                                 await asyncio.sleep(ex.x + 1)
                             else:
                                 break
-                        handled.add((sexy_chat_id, message.id))
+                        handled[sexy_chat_id].add(message.id)
                         return
     raise ContinuePropagation
