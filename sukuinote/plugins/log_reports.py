@@ -93,4 +93,3 @@ async def log_reports(client, message):
             text += f'</a></b> {html.escape(mtext.strip()[:1000])}'
         log_ring.append(text)
         reported[message.chat.id].add(message.message_id)
-        reported[reply.chat.id].add(reply.message_id)
