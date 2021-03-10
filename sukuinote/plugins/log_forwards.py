@@ -28,7 +28,7 @@ async def log_forwards(client, message):
     else:
         return
     async with lock:
-        if message.message_id not in logged[message.chat.id]:
+        if message.message_id in logged[message.chat.id]:
             return
         chat_text = html.escape(message.chat.title)
         if message.chat.username:
