@@ -16,3 +16,4 @@ config:
     log_user_adds: true
     log_reports: true
     log_forwards: true
+    log_ring_maxlen: 69420

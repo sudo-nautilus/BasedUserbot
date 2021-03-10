@@ -1,6 +1,7 @@
 import asyncio
 from pyrogram import idle
-from . import loop, apps, slave, app_user_ids, session
+from pyrogram.errors.exceptions.flood_420 import FloodWait
+from . import loop, apps, slave, app_user_ids, session, log_ring, config
 
 async def main():
     async def _start_app(app):
@@ -11,9 +12,24 @@ async def main():
             try:
                 me = await app.get_me()
                 app_user_ids[me.id] = me
-            except:
+            except BaseException:
                 pass
             await asyncio.sleep(60)
+    async def log_ring_worker():
+        while True:
+            await asyncio.sleep(1)
+            try:
+                text = log_ring.popleft()
+            except IndexError:
+                pass
+            while True:
+                try:
+                    await slave.send_message(config['config']['log_chat'], text, disable_web_page_preview=True)
+                except FloodWait as ex:
+                    await asyncio.sleep(ex.x + 1)
+                else:
+                    break
+    asyncio.create_task(log_ring_worker())
     await asyncio.gather(*(_start_app(app) for app in apps), slave.start())
     await idle()
     await asyncio.gather(*(app.stop() for app in apps), slave.stop())

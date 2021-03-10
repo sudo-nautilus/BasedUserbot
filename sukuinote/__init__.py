@@ -8,6 +8,7 @@ import functools
 import mimetypes
 import yaml
 import aiohttp
+from collections import deque
 from datetime import timedelta
 from pyrogram import Client, StopPropagation, ContinuePropagation
 from pyrogram.types import Chat, User
@@ -19,6 +20,7 @@ with open('config.yaml') as config:
     config = yaml.safe_load(config)
 loop = asyncio.get_event_loop()
 help_dict = dict()
+log_ring = deque(maxlen=config['config'].get('log_ring_maxlen', 69420))
 
 apps = []
 app_user_ids = dict()

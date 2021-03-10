@@ -2,8 +2,7 @@ import html
 import asyncio
 from collections import defaultdict
 from pyrogram import Client, filters
-from pyrogram.errors.exceptions.flood_420 import FloodWait
-from .. import config, slave, log_errors, app_user_ids
+from .. import config, log_errors, app_user_ids, log_ring
 
 logged = defaultdict(set)
 lock = asyncio.Lock()
@@ -87,11 +86,5 @@ async def log_forwards(client, message):
         if forwardee.is_scam:
             user_text += ' <code>[SCAM]</code>'
         text += f'{user_text} [<code>{forwardee.id}</code>]'
-        while True:
-            try:
-                await slave.send_message(config['config']['log_chat'], text, disable_web_page_preview=True)
-            except FloodWait as ex:
-                await asyncio.sleep(ex.x + 1)
-            else:
-                break
+        log_ring.append(text)
         logged[message.chat.id].add(message.message_id)

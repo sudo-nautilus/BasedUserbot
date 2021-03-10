@@ -2,8 +2,7 @@ import html
 import asyncio
 from collections import defaultdict
 from pyrogram import Client, filters
-from pyrogram.errors.exceptions.flood_420 import FloodWait
-from .. import config, slave, log_errors
+from .. import config, log_errors, log_ring
 
 reported = defaultdict(set)
 lock = asyncio.Lock()
@@ -92,12 +91,6 @@ async def log_reports(client, message):
             if mtext.strip():
                 text += ':'
             text += f'</a></b> {html.escape(mtext.strip()[:1000])}'
-        while True:
-            try:
-                reply = await slave.send_message(config['config']['log_chat'], text, disable_web_page_preview=True)
-            except FloodWait as ex:
-                await asyncio.sleep(ex.x + 1)
-            else:
-                break
+        log_ring.append(text)
         reported[message.chat.id].add(message.message_id)
         reported[reply.chat.id].add(reply.message_id)
