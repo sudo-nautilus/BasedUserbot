@@ -1,6 +1,7 @@
 import html
 from pyrogram import Client, filters
 from pyrogram.errors.exceptions.forbidden_403 import Forbidden
+from pyrogram.errors.exceptions.bad_request_400 import ChatSendInlineForbidden
 from .. import slave, config, help_dict, log_errors, public_log_errors
 
 @Client.on_message(~filters.forwarded & ~filters.sticker & ~filters.via_bot & ~filters.edited & filters.me & filters.command('help', prefixes=config['config']['prefixes']))
@@ -25,7 +26,7 @@ async def help(client, message):
         result = results.results[0]
     try:
         await message.reply_inline_bot_result(results.query_id, result.id)
-    except Forbidden:
+    except (Forbidden, ChatSendInlineForbidden):
         if module:
             await message.reply_text({'message': result.send_message.message, 'entities': result.send_message.entities}, parse_mode='through')
         else:
