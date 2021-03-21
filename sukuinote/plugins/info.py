@@ -25,6 +25,8 @@ def _generate_sexy(entity, ping):
         sexy_text += ' <code>[SUPPORT]</code>'
     if entity.is_scam:
         sexy_text += ' <code>[SCAM]</code>'
+    if getattr(entity, 'is_fake', None):
+        sexy_text += ' <code>[FAKE]</code>'
     return sexy_text
 
 @Client.on_message(~filters.forwarded & ~filters.sticker & ~filters.via_bot & ~filters.edited & filters.me & filters.command(['info', 'whois'], prefixes=config['config']['prefixes']))

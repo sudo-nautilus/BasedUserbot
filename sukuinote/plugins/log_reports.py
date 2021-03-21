@@ -25,6 +25,8 @@ async def log_reports(client, message):
             chat_text += '<code>[SUPPORT]</code> '
         if message.chat.is_scam:
             chat_text += '<code>[SCAM]</code> '
+        if getattr(message.chat, 'is_fake', None):
+            chat_text += '<code>[FAKE]</code> '
         text += f'[<code>{message.chat.id}</code>]\n- <b>Reporter:</b> '
         if message.from_user:
             user_text = message.from_user.first_name
@@ -37,6 +39,8 @@ async def log_reports(client, message):
                 user_text += ' <code>[SUPPORT]</code>'
             if message.from_user.is_scam:
                 user_text += ' <code>[SCAM]</code>'
+            if getattr(message.from_user, 'is_fake', None):
+                user_text += ' <code>[FAKE]</code>'
             user_text += f' [<code>{message.from_user.id}</code>]'
         elif message.sender_chat and message.sender_chat.id != message.chat.id:
             user_text = html.escape(message.sender_chat.title)
@@ -48,6 +52,8 @@ async def log_reports(client, message):
                 user_text += ' <code>[SUPPORT]</code>'
             if message.sender_chat.is_scam:
                 user_text += ' <code>[SCAM]</code>'
+            if getattr(message.sender_chat, 'is_fake', None):
+                user_text += ' <code>[FAKE]</code>'
         else:
             user_text = 'Anonymous'
         text += f'{user_text}\n'
@@ -73,6 +79,8 @@ async def log_reports(client, message):
                     user_text += ' <code>[SUPPORT]</code>'
                 if reply.from_user.is_scam:
                     user_text += ' <code>[SCAM]</code>'
+                if getattr(reply.from_user, 'is_fake', None):
+                    user_text += ' <code>[FAKE]</code>'
                 user_text += f' [<code>{reply.from_user.id}</code>]'
             elif reply.sender_chat and reply.sender_chat.id != reply.chat.id:
                 user_text = html.escape(reply.sender_chat.title)
@@ -84,6 +92,8 @@ async def log_reports(client, message):
                     user_text += ' <code>[SUPPORT]</code>'
                 if reply.sender_chat.is_scam:
                     user_text += ' <code>[SCAM]</code>'
+                if getattr(reply.sender_chat, 'is_fake', None):
+                    user_text += ' <code>[FAKE]</code>'
             else:
                 user_text = 'Anonymous'
             text += f'{user_text}\n- <b><a href="{reply.link}">Reported Message'

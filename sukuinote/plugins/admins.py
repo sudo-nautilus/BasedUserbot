@@ -23,6 +23,8 @@ def _generate_sexy(entity, ping, is_creator):
         sexy_text += ' <code>[SUPPORT]</code>'
     if entity.is_scam:
         sexy_text += ' <code>[SCAM]</code>'
+    if getattr(entity, 'is_fake', None):
+        sexy_text += ' <code>[FAKE]</code>'
     if is_creator:
         sexy_text += ' <code>[CREATOR]</code>'
     return sexy_text

@@ -40,6 +40,8 @@ async def log_forwards(client, message):
             chat_text += '<code>[SUPPORT]</code> '
         if message.chat.is_scam:
             chat_text += '<code>[SCAM]</code> '
+        if getattr(message.chat, 'is_fake', None):
+            chat_text += '<code>[FAKE]</code> '
         text += f'[<code>{message.chat.id}</code>]'
         if message.chat.type != 'channel':
             if message.from_user:
@@ -53,6 +55,8 @@ async def log_forwards(client, message):
                     user_text += ' <code>[SUPPORT]</code>'
                 if message.from_user.is_scam:
                     user_text += ' <code>[SCAM]</code>'
+                if getattr(message.from_user, 'is_fake', None):
+                    user_text += ' <code>[FAKE]</code>'
                 user_text += f' [<code>{message.from_user.id}</code>]'
             elif message.sender_chat and message.sender_chat.id != message.chat.id:
                 user_text = html.escape(message.sender_chat.title)
@@ -64,6 +68,8 @@ async def log_forwards(client, message):
                     user_text += ' <code>[SUPPORT]</code>'
                 if message.sender_chat.is_scam:
                     user_text += ' <code>[SCAM]</code>'
+                if getattr(message.sender_chat, 'is_fake', None):
+                    user_text += ' <code>[FAKE]</code>'
             else:
                 user_text = 'Anonymous'
             text += f'\n- <b>Forwarder:</b> {user_text}'
@@ -85,6 +91,8 @@ async def log_forwards(client, message):
             user_text += ' <code>[SUPPORT]</code>'
         if forwardee.is_scam:
             user_text += ' <code>[SCAM]</code>'
+        if getattr(forwardee, 'is_fake', None):
+            user_text += ' <code>[FAKE]</code>'
         text += f'{user_text} [<code>{forwardee.id}</code>]'
         log_ring.append(text)
         logged[message.chat.id].add(message.message_id)
