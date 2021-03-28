@@ -157,6 +157,8 @@ async def generate_character(anilist):
     site_url = anilist['siteUrl']
     image = anilist['image']['large']
     media = anilist['media']
+    if media:
+        media = media['nodes']
     text = f'<a href="{site_url}">{title_full}</a>'
     if title_native:
         text += f' ({title_native})'
