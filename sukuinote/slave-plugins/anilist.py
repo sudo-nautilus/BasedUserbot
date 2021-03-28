@@ -163,7 +163,11 @@ async def generate_character(anilist):
     if title_alternative:
         text += f'\n<b>Synonyms:</b> {title_alternative}'
     if media:
-        text += f'\n<b>Featured In:</b>{" " if len(media) == 1 else "\n"}'
+        text += '\n<b>Featured In:</b>'
+        if len(media) == 1:
+            text += ' '
+        else:
+            text += '\n'
         to_add = []
         for i in media:
             atext = f'<a href="{i["siteUrl"]}">{i["title"]["romaji"]}</a>'
