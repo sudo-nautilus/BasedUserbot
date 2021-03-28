@@ -180,7 +180,7 @@ async def generate_character(anilist):
             if i['format'] == 'NOVEL':
                 type = 'Light Novel'
             else:
-                type = anilist['type'].capitalize()
+                type = i['type'].capitalize()
             to_add.append(atext + f' [{type}]')
         text += '\n'.join(to_add)
     if description:
