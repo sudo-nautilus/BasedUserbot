@@ -65,6 +65,18 @@ CHARACTER_QUERY = '''query ($id: Int, $search: String) {
       	image {
           large
         }
+        media {
+            nodes {
+                title {
+                    romaji
+                    english
+                    native
+                }
+                type
+                format
+                siteUrl
+            }
+        }
       	siteUrl
       }
     }
@@ -144,11 +156,27 @@ async def generate_character(anilist):
     description = re.sub(r"<span class='markdown_spoiler'><span>(.+)</span></span>", hide_spoiler, (anilist.get('description') or '').strip())
     site_url = anilist['siteUrl']
     image = anilist['image']['large']
+    media = anilist['media']
     text = f'<a href="{site_url}">{title_full}</a>'
     if title_native:
         text += f' ({title_native})'
     if title_alternative:
         text += f'\n<b>Synonyms:</b> {title_alternative}'
+    if media:
+        text += f'\n<b>Featured In:</b>{" " if len(media) == 1 else "\n"}'
+        to_add = []
+        for i in media:
+            atext = f'<a href="{i["siteUrl"]}">{i["title"]["romaji"]}</a>'
+            if i['title']['english']:
+                atext += f' ({i["title"]["english"]})'
+            if i['title']['native']:
+                atext += f' ({i["title"]["native"]})'
+            if i['format'] == 'NOVEL':
+                type = 'Light Novel'
+            else:
+                type = anilist['type'].capitalize()
+            to_add.append(atext + f' [{type}]')
+        text += '\n'.join(to_add)
     if description:
         text += '\n'
         parser = pyrogram_html.HTML(None)
