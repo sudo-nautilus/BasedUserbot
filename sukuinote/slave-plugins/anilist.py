@@ -70,6 +70,9 @@ CHARACTER_QUERY = '''query ($id: Int, $search: String) {
     }
 }'''
 
+def hide_spoiler(match):
+    return re.sub(r'\S', '█', match.group(1))
+
 async def generate_media(anilist):
     title_romaji = anilist['title']['romaji']
     title_english = anilist['title']['english']
@@ -81,7 +84,7 @@ async def generate_media(anilist):
     format = anilist['format']
     format = FORMAT_NAMES.get(format, format)
     status = (anilist['status'] or 'Unknown').replace('_', ' ').title()
-    description = (anilist.get('description') or '').strip()
+    description = re.sub(r"<span class='markdown_spoiler'><span>(.+)</span></span>", hide_spoiler, (anilist.get('description') or '').strip())
     episodes = anilist['episodes']
     duration = anilist['duration']
     chapters = anilist['chapters']
@@ -138,7 +141,7 @@ async def generate_character(anilist):
     title_full = anilist['name']['full']
     title_native = anilist['name']['native']
     title_alternative = ', '.join(anilist['name']['alternative'])
-    description = (anilist['description'] or '').strip()
+    description = re.sub(r"<span class='markdown_spoiler'><span>(.+)</span></span>", hide_spoiler, (anilist.get('description') or '').strip())
     site_url = anilist['siteUrl']
     image = anilist['image']['large']
     text = f'<a href="{site_url}">{title_full}</a>'
