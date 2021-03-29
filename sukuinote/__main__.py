@@ -1,4 +1,7 @@
+import html
 import asyncio
+import logging
+import traceback
 from pyrogram import idle
 from pyrogram.errors.exceptions.flood_420 import FloodWait
 from . import loop, apps, slave, app_user_ids, session, log_ring, config
@@ -28,6 +31,9 @@ async def main():
                         await slave.send_message(config['config']['log_chat'], text, disable_web_page_preview=True)
                     except FloodWait as ex:
                         await asyncio.sleep(ex.x + 1)
+                    except BaseException:
+                        logging.exception('Exception occured while sending message to log chat')
+                        log_ring.append(f'Exception occured while sending message to log chat\n\n{html.escape(traceback.format_exc())}')
                     else:
                         break
     asyncio.create_task(log_ring_worker())
