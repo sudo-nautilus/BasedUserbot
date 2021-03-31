@@ -172,7 +172,7 @@ async def generate_character(anilist):
             text += '\n'
         to_add = []
         for i in media[:5]:
-            atext = f'<a href="{i["siteUrl"]}">{i["title"]["romaji"]}</a>'
+            atext = f'- <a href="{i["siteUrl"]}">{i["title"]["romaji"]}</a>'
             if i['title']['english']:
                 atext += f' ({i["title"]["english"]})'
             if i['title']['native']:
@@ -184,7 +184,7 @@ async def generate_character(anilist):
             to_add.append(f'{atext} [{type}]')
         text += '\n'.join(to_add)
         if len(media) > 5:
-            text += f'\n(and {len(media) - 5} other{"" if len(media) == 6 else "s"})'
+            text += f'\n- (and {len(media) - 5} other{"" if len(media) == 6 else "s"})'
     if description:
         text += '\n'
         parser = pyrogram_html.HTML(None)
