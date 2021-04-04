@@ -3,11 +3,12 @@ from pyrogram import Client, filters
 from .. import config, help_dict, log_errors, public_log_errors, get_entity
 
 ZWS = '\u200B'
+FORCE_LTR = '\u200E'
 def _generate_sexy(entity, ping, is_creator):
     text = entity.first_name
     if entity.last_name:
         text += f' {entity.last_name}'
-    sexy_text = '<code>[DELETED]</code>' if entity.is_deleted else html.escape(text or 'Empty???')
+    sexy_text = '<code>[DELETED]</code>' if entity.is_deleted else (html.escape(text or 'Empty???') + FORCE_LTR)
     if not entity.is_deleted:
         if ping:
             sexy_text = f'<a href="tg://user?id={entity.id}">{sexy_text}</a>'
