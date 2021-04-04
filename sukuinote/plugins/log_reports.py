@@ -68,7 +68,7 @@ async def log_reports(client, message):
             text += f'{force_ltr} {html.escape(mtext.strip()[:1000])}'
         reply = message.reply_to_message
         if not getattr(reply, 'empty', True):
-            text += '\n{force_ltr}- <b>Reportee:</b> '
+            text += f'\n{force_ltr}- <b>Reportee:</b> '
             if reply.from_user:
                 user_text = reply.from_user.first_name
                 if reply.from_user.last_name:

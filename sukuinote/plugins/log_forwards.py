@@ -81,7 +81,7 @@ async def log_forwards(client, message):
         text += '</a></b>'
         if mtext:
             text += f'{force_ltr} {html.escape(mtext.strip()[:2000])}'
-        text += '\n{force_ltr}- <b>Forwardee:</b> '
+        text += f'\n{force_ltr}- <b>Forwardee:</b> '
         user_text = forwardee.first_name
         if forwardee.last_name:
             user_text += f' {forwardee.last_name}'
