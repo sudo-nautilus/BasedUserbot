@@ -13,6 +13,8 @@ def sexy_user_name(user):
 
 handled = defaultdict(set)
 lock = asyncio.Lock()
+force_ltr = '\u200E'
+
 @Client.on_raw_update()
 @log_errors
 async def log_user_joins(client, update, users, chats):
@@ -39,7 +41,7 @@ async def log_user_joins(client, update, users, chats):
                     raise ContinuePropagation
                 if not is_join and not config['config']['log_user_adds']:
                     raise ContinuePropagation
-                text = f"<b>{'User Join Event' if is_join else 'User Add Event'}</b>\n- <b>Chat:</b> "
+                text = f"<b>{'User Join Event' if is_join else 'User Add Event'}</b>\n{force_ltr}- <b>Chat:</b> "
                 atext = html.escape(chats[chat_id].title)
                 if getattr(chats[chat_id], 'username', None):
                     atext = f'<a href="https://t.me/{chats[chat_id].username}">{atext}</a>'
@@ -51,13 +53,13 @@ async def log_user_joins(client, update, users, chats):
                         else:
                             adder = 'Anonymous'
                         if is_join:
-                            text += f'- <b>User:</b> {adder}\n'
+                            text += f'{force_ltr}- <b>User:</b> {adder}\n'
                             if isinstance(action, MessageActionChatJoinedByLink):
-                                text += f'- <b>Inviter:</b> {sexy_user_name(users[action.inviter_id])}'
+                                text += f'{force_ltr}- <b>Inviter:</b> {sexy_user_name(users[action.inviter_id])}'
                         else:
-                            text += f'- <b>Adder:</b> {adder}\n- <b>Added Users:</b>\n'
+                            text += f'{force_ltr}- <b>Adder:</b> {adder}\n{force_ltr}- <b>Added Users:</b>\n'
                             for user in action.users:
-                                text += f'--- {sexy_user_name(users[user])}\n'
+                                text += f'{force_ltr}--- {sexy_user_name(users[user])}\n'
                         log_ring.append(text)
                         handled[sexy_chat_id].add(message.id)
                         return

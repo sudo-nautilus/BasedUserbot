@@ -6,6 +6,7 @@ from .. import config, log_errors, app_user_ids, log_ring
 
 logged = defaultdict(set)
 lock = asyncio.Lock()
+force_ltr = '\u200E'
 
 @Client.on_message(~filters.chat(config['config']['log_chat']) & filters.incoming & filters.forwarded & (filters.group | filters.channel))
 @log_errors
@@ -33,7 +34,7 @@ async def log_forwards(client, message):
         chat_text = html.escape(message.chat.title)
         if message.chat.username:
             chat_text = f'<a href="https://t.me/{message.chat.username}">{chat_text}</a>'
-        text = f'<b>Forwarded Event</b>\n- <b>Chat:</b> {chat_text} '
+        text = f'<b>Forwarded Event</b>\n{force_ltr}- <b>Chat:</b> {chat_text} '
         if message.chat.is_verified:
             chat_text += '<code>[VERIFIED]</code> '
         if message.chat.is_support:
@@ -72,15 +73,15 @@ async def log_forwards(client, message):
                     user_text += ' <code>[FAKE]</code>'
             else:
                 user_text = 'Anonymous'
-            text += f'\n- <b>Forwarder:</b> {user_text}'
+            text += f'\n{force_ltr}- <b>Forwarder:</b> {user_text}'
         text += f'\n- <b><a href="{message.link}">Message'
         mtext = (message.text or message.caption or '').strip()
         if mtext:
             text += ':'
         text += '</a></b>'
         if mtext:
-            text += f' {html.escape(mtext.strip()[:2000])}'
-        text += '\n- <b>Forwardee:</b> '
+            text += f'{force_ltr} {html.escape(mtext.strip()[:2000])}'
+        text += '\n{force_ltr}- <b>Forwardee:</b> '
         user_text = forwardee.first_name
         if forwardee.last_name:
             user_text += f' {forwardee.last_name}'
