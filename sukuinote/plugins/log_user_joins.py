@@ -9,7 +9,7 @@ def sexy_user_name(user):
     text = user.first_name
     if user.last_name:
         text += ' ' + user.last_name
-    return f'{"<code>[DELETED]</code>" if user.deleted else html.escape(text or "Empty???")} [<code>{user.id}</code>]'
+    return f'{"<code>[DELETED]</code>" if user.deleted else (html.escape(text or "Empty???") + force_ltr)} [<code>{user.id}</code>]'
 
 handled = defaultdict(set)
 lock = asyncio.Lock()
@@ -41,11 +41,11 @@ async def log_user_joins(client, update, users, chats):
                     raise ContinuePropagation
                 if not is_join and not config['config']['log_user_adds']:
                     raise ContinuePropagation
-                text = f"<b>{'User Join Event' if is_join else 'User Add Event'}</b>\n{force_ltr}- <b>Chat:</b> "
+                text = f"<b>{'User Join Event' if is_join else 'User Add Event'}</b>\n- <b>Chat:</b> "
                 atext = html.escape(chats[chat_id].title)
                 if getattr(chats[chat_id], 'username', None):
                     atext = f'<a href="https://t.me/{chats[chat_id].username}">{atext}</a>'
-                text += f"{atext} [<code>{sexy_chat_id}</code>]\n"
+                text += f"{atext}{force_ltr} [<code>{sexy_chat_id}</code>]\n"
                 async with lock:
                     if message.id not in handled[sexy_chat_id]:
                         if isinstance(message.from_id, PeerUser):
@@ -53,13 +53,13 @@ async def log_user_joins(client, update, users, chats):
                         else:
                             adder = 'Anonymous'
                         if is_join:
-                            text += f'{force_ltr}- <b>User:</b> {adder}\n'
+                            text += f'- <b>User:</b> {adder}\n'
                             if isinstance(action, MessageActionChatJoinedByLink):
-                                text += f'{force_ltr}- <b>Inviter:</b> {sexy_user_name(users[action.inviter_id])}'
+                                text += f'- <b>Inviter:</b> {sexy_user_name(users[action.inviter_id])}'
                         else:
-                            text += f'{force_ltr}- <b>Adder:</b> {adder}\n{force_ltr}- <b>Added Users:</b>\n'
+                            text += f'- <b>Adder:</b> {adder}\n- <b>Added Users:</b>\n'
                             for user in action.users:
-                                text += f'{force_ltr}--- {sexy_user_name(users[user])}\n'
+                                text += f'--- {sexy_user_name(users[user])}\n'
                         log_ring.append(text)
                         handled[sexy_chat_id].add(message.id)
                         return

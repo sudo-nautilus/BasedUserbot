@@ -34,7 +34,7 @@ async def log_forwards(client, message):
         chat_text = html.escape(message.chat.title)
         if message.chat.username:
             chat_text = f'<a href="https://t.me/{message.chat.username}">{chat_text}</a>'
-        text = f'<b>Forwarded Event</b>\n{force_ltr}- <b>Chat:</b> {chat_text} '
+        text = f'<b>Forwarded Event</b>\n- <b>Chat:</b> {chat_text}{force_ltr} '
         if message.chat.is_verified:
             chat_text += '<code>[VERIFIED]</code> '
         if message.chat.is_support:
@@ -73,15 +73,15 @@ async def log_forwards(client, message):
                     user_text += ' <code>[FAKE]</code>'
             else:
                 user_text = 'Anonymous'
-            text += f'\n{force_ltr}- <b>Forwarder:</b> {user_text}'
+            text += f'\n- <b>Forwarder:</b> {user_text}{force_ltr}'
         text += f'\n- <b><a href="{message.link}">Message'
         mtext = (message.text or message.caption or '').strip()
         if mtext:
             text += ':'
         text += '</a></b>'
         if mtext:
-            text += f'{force_ltr} {html.escape(mtext.strip()[:2000])}'
-        text += f'\n{force_ltr}- <b>Forwardee:</b> '
+            text += f' {html.escape(mtext.strip()[:2000])}{force_ltr}'
+        text += '\n- <b>Forwardee:</b> '
         user_text = forwardee.first_name
         if forwardee.last_name:
             user_text += f' {forwardee.last_name}'
@@ -94,6 +94,6 @@ async def log_forwards(client, message):
             user_text += ' <code>[SCAM]</code>'
         if getattr(forwardee, 'is_fake', None):
             user_text += ' <code>[FAKE]</code>'
-        text += f'{user_text} [<code>{forwardee.id}</code>]'
+        text += f'{user_text}{force_ltr} [<code>{forwardee.id}</code>]'
         log_ring.append(text)
         logged[message.chat.id].add(message.message_id)
