@@ -55,6 +55,12 @@ async def info(client, message):
     if entity.username:
         text_ping += f'\n<b>Username:</b> @{entity.username}'
         text_unping += f'\n<b>Username:</b> @{ZWS}{entity.username}'
+    if entity.restrictions:
+        restrictions = []
+        for r in entity.restrictions:
+            restrictions.append(f"{r.reason}-{r.platform}")
+        text_ping += f'\n<b>Restrictions:</b> {", ".join(restrictions)}'
+        text_unping += f'\n<b>Restrictions:</b> {", ".join(restrictions)}'
     if entity.members_count:
         text_ping += f'\n<b>Members:</b> {entity.members_count}'
         text_unping += f'\n<b>Members:</b> {entity.members_count}'
