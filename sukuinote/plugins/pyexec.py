@@ -59,7 +59,7 @@ async def pyexec(client, message):
         sys.stderr = wrapped_stderr
         task = asyncio.create_task(async_obj())
         exec_tasks[hash(UniqueExecReturnIdentifier)] = task
-        returned = await async_obj
+        returned = await task
     except asyncio.CancelledError:
         sys.stdout = stdout
         sys.stderr = stderr
