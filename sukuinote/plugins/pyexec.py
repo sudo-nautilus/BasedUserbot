@@ -114,7 +114,7 @@ async def listexec(client, message):
 @public_log_errors
 async def cancelexec(client, message):
     try:
-        task = exec_tasks.get(int(message[1]))
+        task = exec_tasks.get(int(message.command[1]))
     except IndexError:
         return
     if not task:
