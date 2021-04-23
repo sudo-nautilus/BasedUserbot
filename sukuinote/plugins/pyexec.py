@@ -107,7 +107,7 @@ async def listexec(client, message):
         await message.reply_document(f)
     else:
         text = '\n'.join(map(lambda i: f'<code>{i}</code>', exec_tasks))
-        await message.reply_text(text)
+        await message.reply_text(text or 'No tasks')
 
 @Client.on_message(~filters.forwarded & ~filters.sticker & ~filters.via_bot & ~filters.edited & filters.me & filters.command(['cancelexec', 'cexec'], prefixes=config['config']['prefixes']))
 @log_errors
