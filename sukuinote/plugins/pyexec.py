@@ -41,7 +41,8 @@ async def pyexec(client, message):
         if ex.msg != "'return' with value in async generator":
             raise
         exx = _gf(obody)
-    reply = await message.reply_text(f'Executing <code>{hash(UniqueExecReturnIdentifier)}</code>...')
+    rnd_id = client.rnd_id()
+    reply = await message.reply_text(f'Executing <code>{rnd_id}</code>...')
     oasync_obj = exx(client, client, message, message, reply, message.reply_to_message, message.reply_to_message, UniqueExecReturnIdentifier)
     if inspect.isasyncgen(oasync_obj):
         async def async_obj():
@@ -58,18 +59,18 @@ async def pyexec(client, message):
         sys.stdout = wrapped_stdout
         sys.stderr = wrapped_stderr
         task = asyncio.create_task(async_obj())
-        exec_tasks[hash(UniqueExecReturnIdentifier)] = task
+        exec_tasks[rnd_id] = task
         returned = await task
     except asyncio.CancelledError:
         sys.stdout = stdout
         sys.stderr = stderr
-        exec_tasks.pop(hash(UniqueExecReturnIdentifier), None)
+        exec_tasks.pop(rnd_id, None)
         await reply.edit_text('Cancelled')
         return
     finally:
         sys.stdout = stdout
         sys.stderr = stderr
-        exec_tasks.pop(hash(UniqueExecReturnIdentifier), None)
+        exec_tasks.pop(rnd_id, None)
     wrapped_stderr.seek(0)
     wrapped_stdout.seek(0)
     output = ''
