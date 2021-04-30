@@ -45,10 +45,22 @@ async def saucenao(client, message):
         if not mimetype.startswith('image/') and not mimetype.startswith('video/'):
             await reply.edit_text('Photo or GIF or Video or Sticker required')
             return
-        if mimetype.startswith('video/'):
+        if os.path.getsize(filename) > 20 * 1024:
+            new_path = os.path.join(tempdir, '1.jpg')
+            proc = await asyncio.create_subprocess_exec('ffmpeg', '-an', '-sn', '-i', filename, '-frames:v', '1', new_path)
+            await proc.communicate()
+            os.remove(filename)
+            filename = new_path
+        elif mimetype.startswith('video/'):
             new_path = os.path.join(tempdir, '1.gif')
             proc = await asyncio.create_subprocess_exec('ffmpeg', '-an', '-sn', '-i', filename, new_path)
             await proc.communicate()
+            if os.path.getsize(new_path) > 20 * 1024:
+                os.remove(new_path)
+                new_path = os.path.join(tempdir, '1.jpg')
+                proc = await asyncio.create_subprocess_exec('ffmpeg', '-an', '-sn', '-i', filename, '-frames:v', '1', new_path)
+                await proc.communicate()
+            os.remove(filename)
             filename = new_path
         with open(filename, 'rb') as file:
             async with session.post(f'https://saucenao.com/search.php?db=999&output_type=2&api_key={urlencode(config["config"]["saucenao_api"])}', data={'file': file}) as resp:
