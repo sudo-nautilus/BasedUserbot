@@ -1,4 +1,5 @@
 from pyrogram import Client, filters
+from pyrogram.types.messages_and_media import Photo
 from pyrogram.errors.exceptions.forbidden_403 import Forbidden
 from .. import slave, config, help_dict, log_errors, public_log_errors
 
@@ -9,10 +10,12 @@ async def loli(client, message):
     bot = await slave.get_me()
     query = ' '.join(message.command)
     results = await client.get_inline_bot_results(bot.username or bot.id, query)
+    result = results.results[0]
+    photo = Photo._parse(client, result.photo)
     try:
-        await message.reply_inline_bot_result(results.query_id, results.results[0].id)
+        await message.reply_cached_media(photo.file_id, caption={'message': result.send_message.message, 'entities': result.send_message.entities}, parse_mode='through')
     except Forbidden:
-        await message.reply_text({'message': results.results[0].send_message.message, 'entities': results.results[0].send_message.entities}, disable_web_page_preview=True, parse_mode='through')
+        await message.reply_text({'message': result.send_message.message, 'entities': result.send_message.entities}, parse_mode='through')
 
 help_dict['loli'] = ('Loli',
 '''{prefix}loli <i>[keywords]</i> - Gets a possibly nsfw image of a loli, thanks to lolicon.app
