@@ -21,7 +21,7 @@ async def loli(client, inline_query):
     async with session.get(f'https://api.lolicon.app/setu?num=1&r18={mode}&keyword={urlencode(match.group(2).strip())}&apikey={urlencode(config["config"].get("lollicon_api", ""))}') as resp:
         data = await resp.json()
     if data['code'] or data['msg']:
-        item = InlineQueryResultArticle(f'Error {data["code"]}', InputTextMessageContent(f'<b>{html.escape(str(data["code"]))}:</b> {html.escape(data["msg"])}', description=data['msg'] or None, parse_mode='html'))
+        item = InlineQueryResultArticle(f'Error {data["code"]}', InputTextMessageContent(f'<b>{html.escape(str(data["code"]))}:</b> {html.escape(data["msg"])}', parse_mode='html'), description=data['msg'] or None)
     else:
         data = data['data'][0]
         title = f'{data["title"]} by {data["author"]}'
