@@ -26,7 +26,7 @@ async def loli(client, inline_query):
         data = data['data'][0]
         title = f'{data["title"]} by {data["author"]}'
         description = None
-        caption = f'<a href="https://pixiv.net/artworks/{data["pid"]}">{html.escape(data["title"])}</a> by <a href="https://pixiv.net/users/{data["uid"]}">{html.escape(data["author"]}</a>\n'
+        caption = f'<a href="https://pixiv.net/artworks/{data["pid"]}">{html.escape(data["title"])}</a> by <a href="https://pixiv.net/users/{data["uid"]}">{html.escape(data["author"])}</a>\n'
         if data['tags']:
             caption += f'<b>Tags:</b> {html.escape(", ".join(data["tags"]))}'
             description = f'Tags: {", ".join(data["tags"])}'
