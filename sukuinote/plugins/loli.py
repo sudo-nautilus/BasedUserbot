@@ -11,6 +11,9 @@ async def loli(client, message):
     query = ' '.join(message.command)
     results = await client.get_inline_bot_results(bot.username or bot.id, query)
     result = results.results[0]
+    if result.type != 'photo':
+        await message.reply_text({'message': result.send_message.message, 'entities': result.send_message.entities}, parse_mode='through')
+        return
     photo = Photo._parse(client, result.photo)
     try:
         await message.reply_cached_media(photo.file_id, caption={'message': result.send_message.message, 'entities': result.send_message.entities}, parse_mode='through')
