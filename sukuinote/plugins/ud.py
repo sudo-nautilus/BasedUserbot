@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.errors.exceptions.forbidden_403 import Forbidden
+from pyrogram.errors.exceptions.bad_request_400 import ChatSendInlineForbidden
 from .. import slave, config, help_dict, log_errors, public_log_errors
 
 @Client.on_message(~filters.forwarded & ~filters.sticker & ~filters.via_bot & ~filters.edited & filters.me & filters.command(['ud', 'urbandictionary'], prefixes=config['config']['prefixes']))
@@ -28,7 +29,7 @@ async def ud(client, message):
         await message.reply_inline_bot_result(results.query_id, results.results[page].id)
     except IndexError:
         await message.reply_text(f'There are only {len(results.results)} definitions')
-    except Forbidden:
+    except (Forbidden, ChatInlineSendForbidden):
         await message.reply_text({'message': results.results[page].send_message.message, 'entities': results.results[page].send_message.entities}, disable_web_page_preview=True, parse_mode='through')
 
 help_dict['ud'] = ('Urban Dictionary',
