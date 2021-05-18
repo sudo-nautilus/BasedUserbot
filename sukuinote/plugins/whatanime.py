@@ -33,29 +33,26 @@ async def whatanime(client, message):
         await proc.communicate()
         await reply.edit_text('Uploading...')
         with open(new_path, 'rb') as file:
-            async with session.post('https://trace.moe/api/search', data={'image': file}) as resp:
+            async with session.post('https://api.trace.moe/search?cutBorders&anilistInfo', data={'image': file}) as resp:
                 json = await resp.json(content_type=None)
-    if isinstance(json, str):
-        await reply.edit_text(json, parse_mode=None)
+    if json.get('error'):
+        await reply.edit_text(json['error'], parse_mode=None)
     else:
         try:
-            match = json['docs'][0]
+            match = json['result'][0]
         except IndexError:
             await reply.edit_text('No match')
         else:
-            nsfw = match['is_adult']
-            title_native = match['title_native']
-            title_english = match['title_english']
-            title_romaji = match['title_romaji']
-            synonyms = ', '.join(match['synonyms'])
-            filename = match['filename']
-            tokenthumb = match['tokenthumb']
-            anilist_id = match['anilist_id']
+            nsfw = match['anilist']['isAdult']
+            title_native = match['anilist']['title']['native']
+            title_english = match['anilist']['title']['english']
+            title_romaji = match['anilist']['title']['romaji']
+            synonyms = ', '.join(match['anilist']['synonyms'])
+            anilist_id = match['anilist']['id']
             episode = match['episode']
             similarity = match['similarity']
             from_time = str(datetime.timedelta(seconds=match['from'])).split('.', 1)[0].rjust(8, '0')
             to_time = str(datetime.timedelta(seconds=match['to'])).split('.', 1)[0].rjust(8, '0')
-            at_time = match['at']
             text = f'<a href="https://anilist.co/anime/{anilist_id}">{title_romaji}</a>'
             if title_english:
                 text += f' ({title_english})'
@@ -69,11 +66,10 @@ async def whatanime(client, message):
             if nsfw:
                 text += '<b>Hentai/NSFW:</b> Yes'
             async def _send_preview():
-                url = f'https://media.trace.moe/video/{anilist_id}/{urlencode(filename)}?t={at_time}&token={tokenthumb}'
                 with tempfile.NamedTemporaryFile() as file:
-                    async with session.get(url) as resp:
+                    async with session.get(match['video']) as resp:
                         while True:
-                            chunk = await resp.content.read(10)
+                            chunk = await resp.content.read(4096)
                             if not chunk:
                                 break
                             file.write(chunk)
