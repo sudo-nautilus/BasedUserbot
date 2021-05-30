@@ -54,13 +54,14 @@ DEAI_MODULE_CODES = {
 @log_errors
 @public_log_errors
 async def fedstat(client, message):
-    entity = message.from_user
+    entity = message.from_user or entity.sender_chat
     args = message.command
     command = args.pop(0).lower()
     if args:
         entity = ' '.join(args)
     elif not getattr(message.reply_to_message, 'empty', True):
-        entity = message.reply_to_message.from_user or entity
+        reply = message.reply_to_message
+        entity = reply.from_user or reply.sender_chat or entity
     if isinstance(entity, str) and (not entity.isnumeric() and not entity.startswith('TEL-')):
         entity, entity_client = await get_entity(client, entity)
     if not isinstance(entity, str):
