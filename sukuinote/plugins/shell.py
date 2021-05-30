@@ -10,7 +10,7 @@ SHELL_REGEX = '^(?:' + '|'.join(map(re.escape, config['config']['prefixes'])) + 
 @log_errors
 @public_log_errors
 async def shell(client, message):
-    match = re.match(SHELL_REGEX, message.text.markdown)
+    match = re.match(SHELL_REGEX, (message.text or message.caption).markdown)
     if not match:
         return
     command = match.group(1)

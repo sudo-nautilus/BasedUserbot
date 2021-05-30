@@ -16,7 +16,7 @@ PYEXEC_REGEX = '^(?:' + '|'.join(map(re.escape, config['config']['prefixes'])) +
 @log_errors
 @public_log_errors
 async def pyexec(client, message):
-    match = re.match(PYEXEC_REGEX, message.text.markdown)
+    match = re.match(PYEXEC_REGEX, (message.text or message.caption).markdown)
     if not match:
         return
     code = match.group(1).strip()
