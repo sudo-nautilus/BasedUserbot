@@ -54,7 +54,7 @@ DEAI_MODULE_CODES = {
 @log_errors
 @public_log_errors
 async def fedstat(client, message):
-    entity = message.from_user or entity.sender_chat
+    entity = message.from_user or message.sender_chat
     args = message.command
     command = args.pop(0).lower()
     if args:
