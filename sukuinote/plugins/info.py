@@ -33,7 +33,7 @@ def _generate_sexy(entity, ping):
 @log_errors
 @public_log_errors
 async def info(client, message):
-    entity = message.chat
+    entity = message.chat.id
     command = message.command
     command.pop(0)
     if command:
