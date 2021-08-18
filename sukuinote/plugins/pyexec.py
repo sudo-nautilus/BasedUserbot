@@ -54,10 +54,8 @@ async def pyexec(client, message):
     stdout = sys.stdout
     stderr = sys.stderr
     wrapped_stdout = StringIO()
-    wrapped_stderr = StringIO()
     try:
-        sys.stdout = wrapped_stdout
-        sys.stderr = wrapped_stderr
+        sys.stdout = sys.stderr = wrapped_stdout
         task = asyncio.create_task(async_obj())
         exec_tasks[rnd_id] = task
         returned = await task
@@ -74,10 +72,7 @@ async def pyexec(client, message):
     wrapped_stderr.seek(0)
     wrapped_stdout.seek(0)
     output = ''
-    wrapped_stderr_text = wrapped_stderr.read().strip()
     wrapped_stdout_text = wrapped_stdout.read().strip()
-    if wrapped_stderr_text:
-        output += f'<code>{html.escape(wrapped_stderr_text)}</code>\n'
     if wrapped_stdout_text:
         output += f'<code>{html.escape(wrapped_stdout_text)}</code>\n'
     for i in returned:
@@ -87,7 +82,7 @@ async def pyexec(client, message):
     
     # send as a file if it's longer than 4096 bytes
     if len(output) > 4096:
-        out = wrapped_stderr_text + "\n" + wrapped_stdout_text + "\n"
+        out = wrapped_stdout_text + "\n"
         for i in returned:
             out += str(i).strip() + "\n"
         f = BytesIO(out.strip().encode('utf-8'))
