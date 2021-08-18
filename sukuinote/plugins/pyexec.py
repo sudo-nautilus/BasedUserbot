@@ -69,7 +69,6 @@ async def pyexec(client, message):
         sys.stdout = stdout
         sys.stderr = stderr
         exec_tasks.pop(rnd_id, None)
-    wrapped_stderr.seek(0)
     wrapped_stdout.seek(0)
     output = ''
     wrapped_stdout_text = wrapped_stdout.read().strip()
