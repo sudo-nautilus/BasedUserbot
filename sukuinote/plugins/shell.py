@@ -16,21 +16,17 @@ async def shell(client, message):
     command = match.group(1)
     stdin = match.group(2)
     reply = await message.reply_text('Executing...')
-    process = await asyncio.create_subprocess_shell(command, stdin=asyncio.subprocess.PIPE if stdin else None, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
-    stdout, stderr = await process.communicate(stdin.encode() if stdin else None)
+    process = await asyncio.create_subprocess_shell(command, stdin=asyncio.subprocess.PIPE if stdin else None, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT)
+    stdout, _ = await process.communicate(stdin.encode() if stdin else None)
     returncode = process.returncode
     text = f'<b>Exit Code:</b> <code>{returncode}</code>\n'
     stdout = stdout.decode().replace('\r', '').strip('\n').rstrip()
-    stderr = stderr.decode().replace('\r', '').strip('\n').rstrip()
-    if stderr:
-        text += f'<code>{html.escape(stderr)}</code>\n'
     if stdout:
         text += f'<code>{html.escape(stdout)}</code>'
 
     # send as a file if it's longer than 4096 bytes
     if len(text) > 4096:
-        out = stderr.strip() + "\n" + stdout.strip()
-        f = BytesIO(out.strip().encode('utf-8'))
+        f = BytesIO(stdout.encode('utf-8'))
         f.name = "output.txt"
         await reply.delete()
         await message.reply_document(f, caption=f'<b>Exit Code:</b> <code>{returncode}</code>')
