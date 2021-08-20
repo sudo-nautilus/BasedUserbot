@@ -33,9 +33,16 @@ async def anilist(client, message):
         await message.reply_text(f'There are only {len(results.results)} results')
     except (Forbidden, ChatInlineSendForbidden):
         text = {'message': results.results[page].send_message.message, 'entities': results.results[page].send_message.entities}
-        try:
+        photo = url = None
+        if getattr(result, 'photo', None) is not None:
             photo = Photo._parse(client, results.results[page].photo)
-            await message.reply_cached_media(photo.file_id, caption=text, parse_mode='through')
+        else:
+            url = results.results[page].content.url
+        try:
+            if photo is not None:
+                await message.reply_cached_media(photo.file_id, caption=text, parse_mode='through')
+            else:
+                await message.reply_photo(url, caption=text, parse_mode='through')
         except Forbidden:
             await message.reply_text(text, disable_web_page_preview=True, parse_mode='through')
 

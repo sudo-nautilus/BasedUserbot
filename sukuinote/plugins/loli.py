@@ -17,11 +17,19 @@ async def loli(client, message):
     if result.type != 'photo':
         await to_reply.reply_text({'message': result.send_message.message, 'entities': result.send_message.entities}, parse_mode='through')
         return
-    photo = Photo._parse(client, result.photo)
+    photo = url = None
+    if getattr(result, 'photo', None) is not None:
+        photo = Photo._parse(client, result.photo)
+    else:
+        url = result.content.url
+    text = {'message': result.send_message.message, 'entities': result.send_message.entities}
     try:
-        await to_reply.reply_cached_media(photo.file_id, caption={'message': result.send_message.message, 'entities': result.send_message.entities}, parse_mode='through')
+        if photo is not None:
+            await to_reply.reply_cached_media(photo.file_id, caption=text, parse_mode='through')
+        else:
+            await to_reply.reply_photo(url, caption=text, parse_mode='through')
     except Forbidden:
-        await to_reply.reply_text({'message': result.send_message.message, 'entities': result.send_message.entities}, parse_mode='through')
+        await to_reply.reply_text(text, parse_mode='through')
 
 help_dict['loli'] = ('Loli',
 '''{prefix}loli <i>[keywords]</i> - Gets a possibly nsfw image of a loli, thanks to lolicon.app

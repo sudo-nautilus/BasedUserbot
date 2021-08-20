@@ -1,6 +1,7 @@
 import os
 import logging
 import requests
+from urllib.parse import urlparse
 from pyrogram import Client, filters
 from pyrogram.types.messages_and_media import Photo, Animation
 from pyrogram.errors.exceptions.forbidden_403 import Forbidden
@@ -19,14 +20,14 @@ def _generate(i):
         to_reply = message
         if not getattr(message.reply_to_message, 'empty', True):
             to_reply = message.reply_to_message
-        if result.type == 'photo':
-            file = Photo._parse(client, result.photo)
-        else:
-            file = Animation._parse(client, result.document, result.document.attributes, 'hello.mp4')
         try:
-            await to_reply.reply_cached_media(file.file_id, caption=result.send_message.message, parse_mode=None)
+            animation = os.path.splitext(urlparse(result.send_message.message).path)[1] == '.gif'
+            if animation:
+                await to_reply.reply_animation(result.send_message.message, caption=result.send_message.message)
+            else:
+                await to_reply.reply_photo(result.send_message.message, caption=result.send_message.message)
         except Forbidden:
-            await to_reply.reply_text(result.send_message.message, parse_mode=None)
+            await to_reply.reply_text(result.send_message.message)
     return func
 
 try:
