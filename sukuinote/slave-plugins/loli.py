@@ -11,7 +11,7 @@ async def loli(client, inline_query):
         await inline_query.answer([InlineQueryResultArticle('...no', InputTextMessageContent('...no'))], cache_time=3600, is_personal=True)
         return
     match = inline_query.matches[0]
-    if mode = match.group(1):
+    if mode == match.group(1):
         if mode.startswith('s'):
             mode = 0
         else:
