@@ -1,4 +1,4 @@
-# Sukuinote
+# Sukuinote but kanged
 
 A helping hand that has multiple accounts and a slave attached
 
