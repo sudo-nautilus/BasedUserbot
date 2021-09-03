@@ -1,18 +1,26 @@
 telegram:
-    api_id: 0
-    api_hash: https://my.telegram.org
-    slave_bot_token: https://t.me/BotFather
+    api_id: f_api_id
+    # get the above thing from https://my.telegram.org 
+    api_hash: f_api_hash
+    # get the above thing from https://my.telegram.org
+    slave_bot_token: f_slave_bot_token
+    # grab the above thing from https://t.me/BotFather
 config:
     prefixes:
         - .
     sessions:
-        - blankie
-        - knees
-        - nezuko
-    log_chat: -1001278205033
-    spamwatch_api: https://t.me/SpamWatchBot
-    saucenao_api: https://saucenao.com/user.php?page=search-api
-    lolicon_api: https://t.me/loliconApiBot
+        - random_name
+        # random name
+    log_chat: f_log_chat
+    # log chat id ¯\_(ツ)_/¯
+    spamwatch_api: f_spamwatch_api 
+    # grab from https://t.me/SpamWatchBot
+    saucenao_api: f_saucenao_api
+    # https://saucenao.com/user.php?page=search-api
+    lolicon_api: f_lolicon_api
+    # idk wtf is this https://t.me/loliconApiBot
+
+# change these lines according to your needs
     log_user_joins: false
     log_user_adds: true
     log_reports: true
