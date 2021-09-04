@@ -1,4 +1,4 @@
-# Sukuinote but kanged
+# Sukuinote but kanged and modified (lil)
 
 A helping hand that has multiple accounts and a slave attached
 
