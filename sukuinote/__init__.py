@@ -19,11 +19,11 @@ logging.basicConfig(level=logging.INFO)
 with open('config.yaml') as config:
     config = yaml.safe_load(config)
 loop = asyncio.get_event_loop()
-help_dict = dict()
+help_dict = {}
 log_ring = deque(maxlen=config['config'].get('log_ring_maxlen', 69420))
 
 apps = []
-app_user_ids = dict()
+app_user_ids = {}
 # this code here exists because i can't be fucked
 class Parser(parser.Parser):
     async def parse(self, text, mode):
@@ -157,7 +157,7 @@ def calculate_eta(current, total, start_time):
     thing[-1] = thing[-1].rjust(8, '0')
     return ', '.join(thing)
 
-progress_callback_data = dict()
+progress_callback_data = {}
 async def progress_callback(current, total, reply, text, upload):
     message_identifier = (reply.chat.id, reply.message_id)
     last_edit_time, prevtext, start_time = progress_callback_data.get(message_identifier, (0, None, time.time()))

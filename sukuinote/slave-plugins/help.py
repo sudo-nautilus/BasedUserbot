@@ -41,7 +41,7 @@ async def main_help(client, inline_query):
     results.insert(0, InlineQueryResultArticle('Main Menu', InputTextMessageContent('Select the plugin you want help with'), reply_markup=InlineKeyboardMarkup(buttons), id=f'helpa-{time.time()}'))
     await inline_query.answer(results, is_personal=True)
 
-message_info = dict()
+message_info = {}
 lock = asyncio.Lock()
 @Client.on_chosen_inline_result()
 @log_errors
