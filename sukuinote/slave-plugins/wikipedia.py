@@ -7,7 +7,7 @@ from pyrogram.parser.html import HTML as pyrogram_html
 from pyrogram.types import InlineQueryResultArticle, InputTextMessageContent, InlineKeyboardMarkup, InlineKeyboardButton
 from .. import session, app_user_ids, log_errors
 
-all_results = dict()
+all_results = {}
 results_lock = asyncio.Lock()
 @Client.on_inline_query(filters.regex('^w(?:iki)?(?:pedia)?(.+)$'))
 @log_errors
@@ -47,7 +47,7 @@ async def wikipedia(client, inline_query):
 async def wikipedia_nop(client, callback_query):
     await callback_query.answer(cache_time=3600)
 
-message_info = dict()
+message_info = {}
 message_lock = asyncio.Lock()
 @Client.on_chosen_inline_result()
 @log_errors

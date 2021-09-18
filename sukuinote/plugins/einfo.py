@@ -5,7 +5,7 @@ import datetime
 from pyrogram import Client, filters
 from .. import config, help_dict, get_entity, session, log_errors, public_log_errors
 
-conversation_hack = dict()
+conversation_hack = {}
 
 DEAI_BAN_CODES = {
     "00": "Gban",

@@ -59,7 +59,7 @@ async def purge(client, message):
                 break
     await client.delete_messages(message.chat.id, ids)
 
-yeetpurge_info = {True: dict(), False: dict()}
+yeetpurge_info = {True: {}, False: {}}
 yeetpurge_lock = asyncio.Lock()
 @Client.on_message(~filters.forwarded & ~filters.sticker & ~filters.via_bot & ~filters.edited & filters.me & filters.command(['yp', 'yeetpurge', 'syp', 'selfyeetpurge'], prefixes=config['config']['prefixes']))
 @log_errors
@@ -72,7 +72,7 @@ async def yeetpurge(client, message):
     info = yeetpurge_info['s' in message.command[0]]
     async with yeetpurge_lock:
         if message.from_user.id not in info:
-            info[message.from_user.id] = dict()
+            info[message.from_user.id] = {}
         info = info[message.from_user.id]
         if message.chat.id not in info:
             resp = await message.reply_text('Reply to end destination')

@@ -7,7 +7,7 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineQueryResultArticle, InputTextMessageContent, InlineKeyboardMarkup, InlineKeyboardButton
 from .. import session, app_user_ids, log_errors
 
-all_definitions = dict()
+all_definitions = {}
 definitions_lock = asyncio.Lock()
 @Client.on_inline_query(filters.regex('^u(?:rban)?d(?:ictionary)?(.+)$'))
 @log_errors
@@ -43,7 +43,7 @@ async def ud(client, inline_query):
 async def ud_nop(client, callback_query):
     await callback_query.answer(cache_time=3600)
 
-message_info = dict()
+message_info = {}
 message_lock = asyncio.Lock()
 @Client.on_chosen_inline_result()
 @log_errors
